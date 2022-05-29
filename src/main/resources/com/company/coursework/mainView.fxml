@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.company.coursework.MainController">
+   <children>
+      <AnchorPane fx:id="cellPain" layoutX="42.0" layoutY="14.0" prefHeight="700.0" prefWidth="700.0" />
+      <TextArea layoutX="763.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" text="Log" />
+      <TextArea layoutX="42.0" layoutY="714.0" prefHeight="38.0" prefWidth="700.0" text="a b c d e f g h i k" />
+      <TextField layoutX="26.0" layoutY="14.0" prefHeight="700.0" prefWidth="16.0" text="1 2 3 4 5 6 7 8 9 10" />
+   </children>
+</AnchorPane>
