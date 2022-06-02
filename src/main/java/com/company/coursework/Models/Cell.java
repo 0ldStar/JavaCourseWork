@@ -1,7 +1,6 @@
 package com.company.coursework.Models;
 
-import com.company.coursework.CellKind;
-import com.company.coursework.VirusApplication;
+import com.company.coursework.Main.VirusApplication;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -23,7 +22,8 @@ public class Cell {
         imageView.setPreserveRatio(true);
         imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             try {
-                if (VirusApplication.getInstance().isAvailableCell(x / 70, y / 70, cellKind)) clickAction();
+                if (VirusApplication.getInstance().isAvailableCell(x / 70, y / 70, cellKind))
+                    clickAction(x / 70, y / 70);
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -31,7 +31,7 @@ public class Cell {
         });
     }
 
-    private void clickAction() throws FileNotFoundException {
+    private void clickAction(int _x, int _y) throws FileNotFoundException {
         boolean validClick = false;
         switch (cellKind) {
             case crossMark -> {
@@ -52,11 +52,12 @@ public class Cell {
                 } else {
                     setZeroMark();
                 }
+                VirusApplication.getInstance().cellCount--;
                 validClick = true;
             }
         }
         if (validClick)
-            VirusApplication.getInstance().addClickCount();
+            VirusApplication.getInstance().addClickCount(_x, _y);
     }
 
     public void setCrossMark() throws FileNotFoundException {
@@ -67,15 +68,10 @@ public class Cell {
     }
 
     public void setFilledCrossMark() throws FileNotFoundException {
+        VirusApplication.getInstance().crossCellCount--;
         Image image = new Image(new FileInputStream("src/image/filledCrossMark.png"));
         imageView.setImage(image);
         cellKind = CellKind.filledCrossMark;
-    }
-
-    public void setFilledZeroMark() throws FileNotFoundException {
-        Image image = new Image(new FileInputStream("src/image/filledCircle.png"));
-        imageView.setImage(image);
-        cellKind = CellKind.filledZeroMark;
     }
 
     public void setZeroMark() throws FileNotFoundException {
@@ -83,6 +79,13 @@ public class Cell {
         Image image = new Image(new FileInputStream("src/image/circle.png"));
         imageView.setImage(image);
         cellKind = CellKind.zeroMark;
+    }
+
+    public void setFilledZeroMark() throws FileNotFoundException {
+        VirusApplication.getInstance().zeroCellCount--;
+        Image image = new Image(new FileInputStream("src/image/filledCircle.png"));
+        imageView.setImage(image);
+        cellKind = CellKind.filledZeroMark;
     }
 
     public ImageView getImageView() {

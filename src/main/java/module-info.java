@@ -3,8 +3,10 @@ module com.company.coursework {
     requires javafx.fxml;
 
 
-    opens com.company.coursework to javafx.fxml;
-    exports com.company.coursework;
     exports com.company.coursework.Models;
     opens com.company.coursework.Models to javafx.fxml;
+    exports com.company.coursework.Main;
+    opens com.company.coursework.Main to javafx.fxml;
+    exports com.company.coursework.StartWindow;
+    opens com.company.coursework.StartWindow to javafx.fxml;
 }

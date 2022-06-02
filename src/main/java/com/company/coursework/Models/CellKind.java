@@ -1,4 +1,4 @@
-package com.company.coursework;
+package com.company.coursework.Models;
 
 public enum CellKind {
     crossMark,

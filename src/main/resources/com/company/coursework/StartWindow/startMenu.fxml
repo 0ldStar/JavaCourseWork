@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<DialogPane fx:id="startMenu" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.company.coursework.StartWindow.StartMenuController">
+   <expandableContent>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0" />
+   </expandableContent>
+   <header>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #f0f8ff;">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="283.0" layoutY="14.0" prefHeight="66.0" prefWidth="236.0" text="Virus War" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font name="System Italic" size="25.0" />
+               </font></Label>
+            <Button fx:id="exitMenuButton" layoutX="632.0" layoutY="535.0" mnemonicParsing="false" onAction="#exitMenuButtonClick" prefHeight="50.0" prefWidth="154.0" text="OK" textFill="DARKGREEN">
+               <effect>
+                  <Blend />
+               </effect>
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Button>
+            <Button fx:id="getPropertiesButton" layoutX="631.0" layoutY="290.0" mnemonicParsing="false" onAction="#getPropertiesButtonAction" prefHeight="30.0" prefWidth="155.0" text="Get properties">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Button>
+            <Label focusTraversable="false" layoutX="681.0" layoutY="152.0" text="Server">
+               <font>
+                  <Font name="System Bold Italic" size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="IPTextField" layoutX="630.0" layoutY="201.0" prefHeight="24.0" prefWidth="155.0" />
+            <Label focusTraversable="false" layoutX="630.0" layoutY="180.0" prefHeight="16.0" prefWidth="155.0" text="Enter IP">
+               <font>
+                  <Font name="System Italic" size="13.0" />
+               </font>
+            </Label>
+            <TextField fx:id="loginTextField" layoutX="630.0" layoutY="119.0" prefHeight="24.0" prefWidth="156.0" />
+            <Label focusTraversable="false" layoutX="630.0" layoutY="95.0" prefHeight="16.0" prefWidth="155.0" text="Login">
+               <font>
+                  <Font name="System Italic" size="13.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="clientComboBox" layoutX="631.0" layoutY="336.0" prefHeight="24.0" prefWidth="155.0" />
+            <Button fx:id="connectButton" layoutX="631.0" layoutY="244.0" mnemonicParsing="false" onAction="#connectButtonClick" prefHeight="30.0" prefWidth="153.0" text="Connect">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Button>
+            <TextArea editable="false" focusTraversable="false" layoutX="7.0" layoutY="109.0" prefHeight="476.0" prefWidth="617.0" text="    Играют в «войну вирусов» два игрока на доске 10 на 10 клеток, один крестиками, другой ноликами.&#10;    Ходят поочерёдно. Начинают крестики. Каждый ход состоит из трёх отдельных последовательных ходов (назовём их «ходиками»).&#10;    Каждый «ходик» является либо размножением, либо убиванием. Размножение — это выставление своего символа в любую доступную пустую клетку доски, а убивание — это объявление убитым некоторого чужого символа, который находится на доступной клетке.&#10;    Клетка считается доступной для крестиков, если она либо непосредственно соприкасается (по вертикали, горизонтали или диагонали) с живым крестиком, либо через цепочку убитых ноликов(но не через цепочку убитых крестиков!).&#10;Аналогично определяются клетки, доступные для ноликов: либо непосредственно соприкасающиеся с одним из ноликов, либо через цепочку убитых крестиков.&#10;    Убитые крестики обводятся кружком, убитые нолики закрашиваются. Если игра ведётся не на бумажной доске, а при помощи доски «многоразового использования» и фишек с изображениями крестиков и ноликов, то убитую фишку надо накрыть своей фишкой.&#10;    В начале игры доска пуста, и полей доступных для крестиков нет, поэтому в порядке исключения они имеют право сделать свой первый «ходик» на a1. Точно также нолики имеют право своим первым «ходиком» выставиться на k10.&#10;    В любой момент игрок может отказаться от хода. Однако выполнение вместо полного хода лишь одного или двух «ходиков» запрещается, за исключением того случая, когда выполнить полный ход невозможно в принципе.&#10;    Запрещается:&#10;        Ставить свой символ в уже занятую клетку.&#10;        Убивать уже убитые символы противника.&#10;    Целью игры является полное уничтожение колонии противника (то есть убивание всех вражеских символов). Если оба игрока, считая такое уничтожение невозможным, отказываются от хода, партия считается закончившейся вничью" wrapText="true">
+               <font>
+                  <Font name="Ubuntu" size="13.0" />
+               </font></TextArea>
+            <Label alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="14.0" layoutY="71.0" prefHeight="38.0" prefWidth="100.0" text="Rules:" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font name="System Italic" size="16.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </header>
+</DialogPane>

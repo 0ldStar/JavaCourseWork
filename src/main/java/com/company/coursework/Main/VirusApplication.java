@@ -1,6 +1,8 @@
-package com.company.coursework;
+package com.company.coursework.Main;
 
 import com.company.coursework.Models.Cell;
+import com.company.coursework.Models.CellKind;
+import com.company.coursework.StartWindow.StartMenu;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,7 +17,7 @@ public class VirusApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(VirusApplication.class.getResource("mainView.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Virus");
+        stage.setTitle("Virus War");
         instance = this;
         mainController = fxmlLoader.getController();
         initialization();
@@ -24,7 +26,7 @@ public class VirusApplication extends Application {
     }
 
 
-    private void initialization() throws FileNotFoundException {
+    private void initialization() {
         map = new HashMap<>();
         initGame();
     }
@@ -39,10 +41,16 @@ public class VirusApplication extends Application {
         }
     }
 
-    public void initGame() throws FileNotFoundException {
-        finishGame = false;
+    public void initGame() {
+        try {
+            StartMenu.showMenu();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        finishGameFlag = false;
         cellCount = 100;
         skipMoveKind = CellKind.cell;
+        wonCell = CellKind.cell;
         clickCount = 0;
         crossCellCount = 0;
         zeroCellCount = 0;
@@ -51,7 +59,12 @@ public class VirusApplication extends Application {
         map.clear();
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
-                Cell cell = new Cell(x * 70, y * 70);
+                Cell cell;
+                try {
+                    cell = new Cell(x * 70, y * 70);
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
                 map.put(y * 100 + x, cell);
                 mainController.getCellPain().getChildren().add(cell.getImageView());
             }
@@ -60,27 +73,63 @@ public class VirusApplication extends Application {
 
     public void skipMove() {
         if (moveStatus == CellKind.crossMark) {
-            if (skipMoveKind == CellKind.zeroMark) finishGame = true;
+            if (skipMoveKind == CellKind.zeroMark) finishGameFlag = true;
             skipMoveKind = CellKind.crossMark;
             moveStatus = CellKind.zeroMark;
         } else {
-            if (skipMoveKind == CellKind.crossMark) finishGame = true;
+            if (skipMoveKind == CellKind.crossMark) finishGameFlag = true;
             skipMoveKind = CellKind.zeroMark;
             moveStatus = CellKind.crossMark;
+        }
+        if (finishGameFlag) {
+            finishGame();
         }
         mainController.switchPlayerMove();
     }
 
-    public void addClickCount() {
-        cellCount--;
+    public void finishGame() {
+        mainController.finishGame();
+    }
+
+    public String getClickCountStr() {
+        return Integer.toString(clickCount);
+    }
+
+    public void checkFinish() {
+        if (clickCount > 6) {
+            if (zeroCellCount == 0) {
+                wonCell = CellKind.crossMark;
+                finishGameFlag = true;
+            } else if (crossCellCount == 0) {
+                wonCell = CellKind.zeroMark;
+                finishGameFlag = true;
+            }
+        }
+        if (cellCount == 0) {
+            wonCell = CellKind.cell;
+            finishGameFlag = true;
+        }
+    }
+
+    public void addClickCount(int x, int y) {
         mainController.getSkipMoveButton().setDisable(true);
         clickCount++;
-        mainController.setClickCountTextField(Integer.toString(3 - clickCount % 3));
-        if (clickCount % 3 == 0) {
-            mainController.getSkipMoveButton().setDisable(false);
-            if (moveStatus == CellKind.crossMark) moveStatus = CellKind.zeroMark;
-            else moveStatus = CellKind.crossMark;
-            mainController.switchPlayerMove();
+        String logStr = Character.toString((char) ('a' + x)) + (10 - y);
+        if (clickCount % 3 == 0) logStr = logStr + " ";
+        else logStr = logStr + "-";
+        skipMoveKind = CellKind.cell;
+        mainController.addLogText(logStr);
+        checkFinish();
+        if (finishGameFlag) {
+            finishGame();
+        } else {
+            mainController.setClickCountTextField(Integer.toString(3 - clickCount % 3));
+            if (clickCount % 3 == 0) {
+                mainController.getSkipMoveButton().setDisable(false);
+                if (moveStatus == CellKind.crossMark) moveStatus = CellKind.zeroMark;
+                else moveStatus = CellKind.crossMark;
+                mainController.switchPlayerMove();
+            }
         }
     }
 
@@ -167,16 +216,18 @@ public class VirusApplication extends Application {
 
     public boolean isAvailableCell(int x, int y, CellKind cellKind) {
         boolean status = false;
-        if (cellKind == CellKind.cell && (clickCount == 0 || clickCount == 3)) {
-            if ((x == 0 && y == 9 && moveStatus == CellKind.crossMark) || (x == 9 && y == 0 && moveStatus == CellKind.zeroMark))
-                return true;
-        }
+        if (!finishGameFlag) {
+            if (cellKind == CellKind.cell && (clickCount == 0 || clickCount == 3)) {
+                if ((x == 0 && y == 9 && moveStatus == CellKind.crossMark) || (x == 9 && y == 0 && moveStatus == CellKind.zeroMark))
+                    return true;
+            }
 
-        setUncheckedCellMap();
-        if (moveStatus == CellKind.crossMark && (checkAround(x, y, CellKind.crossMark) || isAvailableByChainCell(x, y, CellKind.crossMark))) {
-            status = true;
-        } else if (moveStatus == CellKind.zeroMark && (checkAround(x, y, CellKind.zeroMark) || isAvailableByChainCell(x, y, CellKind.zeroMark))) {
-            status = true;
+            setUncheckedCellMap();
+            if (moveStatus == CellKind.crossMark && (checkAround(x, y, CellKind.crossMark) || isAvailableByChainCell(x, y, CellKind.crossMark))) {
+                status = true;
+            } else if (moveStatus == CellKind.zeroMark && (checkAround(x, y, CellKind.zeroMark) || isAvailableByChainCell(x, y, CellKind.zeroMark))) {
+                status = true;
+            }
         }
         return status;
     }
@@ -200,8 +251,9 @@ public class VirusApplication extends Application {
 
     private static volatile VirusApplication instance;
     private int clickCount;
-    private int cellCount;
-    public boolean finishGame;
+    public int cellCount;
+    public boolean finishGameFlag;
+    public CellKind wonCell;
     private CellKind skipMoveKind;
     public int crossCellCount;
     public int zeroCellCount;
