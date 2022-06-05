@@ -1,9 +1,14 @@
-package com.company.coursework.Main;
+package com.company.client.Main;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.company.coursework.Models.CellKind;
+import com.company.client.Client;
+import com.company.client.Models.Cell;
+import com.company.share.CellKind;
+import com.company.share.PackageObj;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -34,8 +39,10 @@ public class MainController {
     private TextArea logTextArea;
 
     @FXML
-    void skipMoveButtonClick(ActionEvent event) {
+    public void skipMoveButtonClick(ActionEvent event) throws IOException {
         VirusApplication.getInstance().skipMove();
+        if (Client.getInstance() != null && !Client.getInstance().closeFlag)
+            Client.getInstance().sendMove(new PackageObj(0, 0, true));
     }
 
     @FXML
@@ -64,6 +71,7 @@ public class MainController {
         }
         playerMoveTextField.setText(str);
     }
+
 
     public void setClickCountTextField(String str) {
         clickCountTextField.setText("Click left: " + str);

@@ -1,12 +1,16 @@
-package com.company.coursework.Models;
+package com.company.client.Models;
 
-import com.company.coursework.Main.VirusApplication;
+import com.company.client.Client;
+import com.company.client.Main.VirusApplication;
+import com.company.share.CellKind;
+import com.company.share.PackageObj;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class Cell {
     public Cell(int _x, int _y) throws FileNotFoundException {
@@ -21,17 +25,26 @@ public class Cell {
         imageView.setFitWidth(70);
         imageView.setPreserveRatio(true);
         imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+//            if (Client.getInstance() != null && !Client.getInstance().closeFlag && VirusApplication.getInstance().clickCount == 0 && VirusApplication.getInstance().clientKind == CellKind.zeroMark && Client.getInstance().firstSend) {
+//                try {
+//                    Client.getInstance().getMove();
+//                    Client.getInstance().getMove();
+//                    Client.getInstance().getMove();
+//                } catch (IOException | ClassNotFoundException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
             try {
                 if (VirusApplication.getInstance().isAvailableCell(x / 70, y / 70, cellKind))
                     clickAction(x / 70, y / 70);
-            } catch (FileNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
             event.consume();
         });
     }
 
-    private void clickAction(int _x, int _y) throws FileNotFoundException {
+    public void clickAction(int _x, int _y) throws IOException, ClassNotFoundException {
         boolean validClick = false;
         switch (cellKind) {
             case crossMark -> {
@@ -55,9 +68,15 @@ public class Cell {
                 VirusApplication.getInstance().cellCount--;
                 validClick = true;
             }
+            default -> System.out.println("INVALID");
         }
-        if (validClick)
+        if (validClick) {
+            System.out.println("Clicked");
+            if (Client.getInstance() != null && !Client.getInstance().closeFlag && VirusApplication.getInstance().moveStatus == VirusApplication.getInstance().clientKind)
+                Client.getInstance().sendMove(new PackageObj(_x, _y, false));
+            else System.out.println("Error");
             VirusApplication.getInstance().addClickCount(_x, _y);
+        }
     }
 
     public void setCrossMark() throws FileNotFoundException {

@@ -1,9 +1,12 @@
-package com.company.coursework.Main;
+package com.company.client.Main;
 
-import com.company.coursework.Models.Cell;
-import com.company.coursework.Models.CellKind;
-import com.company.coursework.StartWindow.StartMenu;
+import com.company.client.Client;
+import com.company.client.Models.Cell;
+import com.company.share.CellKind;
+import com.company.client.StartWindow.StartMenu;
+import com.company.share.PackageObj;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -11,10 +14,12 @@ import javafx.stage.Stage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class VirusApplication extends Application {
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException, ClassNotFoundException {
         FXMLLoader fxmlLoader = new FXMLLoader(VirusApplication.class.getResource("mainView.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Virus War");
@@ -40,6 +45,8 @@ public class VirusApplication extends Application {
             entry.getValue().checked = false;
         }
     }
+
+
 
     public void initGame() {
         try {
@@ -71,7 +78,7 @@ public class VirusApplication extends Application {
         }
     }
 
-    public void skipMove() {
+    public void skipMove() throws IOException {
         if (moveStatus == CellKind.crossMark) {
             if (skipMoveKind == CellKind.zeroMark) finishGameFlag = true;
             skipMoveKind = CellKind.crossMark;
@@ -84,6 +91,7 @@ public class VirusApplication extends Application {
         if (finishGameFlag) {
             finishGame();
         }
+        if (Client.getInstance() != null && !Client.getInstance().closeFlag) mainController.getSkipMoveButton().setDisable(clientKind != moveStatus);
         mainController.switchPlayerMove();
     }
 
@@ -111,7 +119,7 @@ public class VirusApplication extends Application {
         }
     }
 
-    public void addClickCount(int x, int y) {
+    public void addClickCount(int x, int y) throws IOException, ClassNotFoundException {
         mainController.getSkipMoveButton().setDisable(true);
         clickCount++;
         String logStr = Character.toString((char) ('a' + x)) + (10 - y);
@@ -125,10 +133,12 @@ public class VirusApplication extends Application {
         } else {
             mainController.setClickCountTextField(Integer.toString(3 - clickCount % 3));
             if (clickCount % 3 == 0) {
-                mainController.getSkipMoveButton().setDisable(false);
                 if (moveStatus == CellKind.crossMark) moveStatus = CellKind.zeroMark;
                 else moveStatus = CellKind.crossMark;
+                if (Client.getInstance() != null && !Client.getInstance().closeFlag) mainController.getSkipMoveButton().setDisable(clientKind != moveStatus);
                 mainController.switchPlayerMove();
+
+
             }
         }
     }
@@ -216,6 +226,10 @@ public class VirusApplication extends Application {
 
     public boolean isAvailableCell(int x, int y, CellKind cellKind) {
         boolean status = false;
+        if (Client.getInstance() != null && !Client.getInstance().closeFlag && clientKind != moveStatus) {
+            System.out.println("Not your move");
+            return false;
+        }
         if (!finishGameFlag) {
             if (cellKind == CellKind.cell && (clickCount == 0 || clickCount == 3)) {
                 if ((x == 0 && y == 9 && moveStatus == CellKind.crossMark) || (x == 9 && y == 0 && moveStatus == CellKind.zeroMark))
@@ -232,8 +246,9 @@ public class VirusApplication extends Application {
         return status;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         launch();
+        if (Client.getInstance() != null) Client.getInstance().quit();
     }
 
     public static VirusApplication getInstance() {
@@ -249,8 +264,13 @@ public class VirusApplication extends Application {
         return localInstance;
     }
 
+    public void getClick(int x, int y) throws IOException, ClassNotFoundException {
+        Cell cell = VirusApplication.getInstance().getCell(x, y);
+        cell.clickAction(x, y);
+    }
+
     private static volatile VirusApplication instance;
-    private int clickCount;
+    public int clickCount;
     public int cellCount;
     public boolean finishGameFlag;
     public CellKind wonCell;
@@ -258,7 +278,9 @@ public class VirusApplication extends Application {
     public int crossCellCount;
     public int zeroCellCount;
     public CellKind moveStatus;
-    private MainController mainController;
+    public MainController mainController;
     public HashMap<Integer, Cell> map;
+    public CellKind clientKind;
+    public boolean initFlag = false;
 }
 

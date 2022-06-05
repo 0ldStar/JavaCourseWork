@@ -1,4 +1,4 @@
-package com.company.coursework.StartWindow;
+package com.company.client.StartWindow;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
