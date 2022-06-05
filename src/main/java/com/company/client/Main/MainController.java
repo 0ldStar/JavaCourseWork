@@ -1,12 +1,12 @@
 package com.company.client.Main;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.company.client.Client;
-import com.company.client.Models.Cell;
 import com.company.share.CellKind;
 import com.company.share.PackageObj;
 import javafx.event.ActionEvent;
@@ -14,10 +14,18 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
 public class MainController {
+    @FXML
+    private ImageView backgroundImage;
 
+    @FXML
+    private ImageView bottomImage;
+    @FXML
+    private ImageView leftImage;
     @FXML
     private ResourceBundle resources;
     @FXML
@@ -34,6 +42,8 @@ public class MainController {
     private Button restartGameButton;
     @FXML
     private TextArea finishTextArea;
+    @FXML
+    private TextField clientNameField;
 
     @FXML
     private TextArea logTextArea;
@@ -97,7 +107,20 @@ public class MainController {
         finishTextArea.setText(wonCellStr + "\nTotal click: " + VirusApplication.getInstance().getClickCountStr());
     }
 
+    public void setClientName(String name) {
+        clientNameField.setVisible(true);
+        clientNameField.setText(name);
+    }
+
     public void init() {
+        try {
+            backgroundImage.setImage(new Image(new FileInputStream("src/image/background.png")));
+            leftImage.setImage(new Image(new FileInputStream("src/image/left.png")));
+            bottomImage.setImage(new Image(new FileInputStream("src/image/bottom.png")));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        if (Client.getInstance() == null || Client.getInstance().closeFlag) clientNameField.setVisible(false);
         skipMoveButton.setDisable(false);
         finishTextArea.setVisible(false);
         restartGameButton.setVisible(false);

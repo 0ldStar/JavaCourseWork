@@ -17,23 +17,14 @@ public class Cell {
         x = _x;
         y = _y;
         cellKind = CellKind.cell;
-        Image image = new Image(new FileInputStream("src/image/background.png"));
+        Image image = new Image(new FileInputStream("src/image/cell.png"));
         imageView = new ImageView(image);
-        imageView.setX(_x);
-        imageView.setY(_y);
+        imageView.setX(_x + 1);
+        imageView.setY(_y + 1);
         imageView.setFitHeight(70);
         imageView.setFitWidth(70);
         imageView.setPreserveRatio(true);
         imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-//            if (Client.getInstance() != null && !Client.getInstance().closeFlag && VirusApplication.getInstance().clickCount == 0 && VirusApplication.getInstance().clientKind == CellKind.zeroMark && Client.getInstance().firstSend) {
-//                try {
-//                    Client.getInstance().getMove();
-//                    Client.getInstance().getMove();
-//                    Client.getInstance().getMove();
-//                } catch (IOException | ClassNotFoundException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
             try {
                 if (VirusApplication.getInstance().isAvailableCell(x / 70, y / 70, cellKind))
                     clickAction(x / 70, y / 70);

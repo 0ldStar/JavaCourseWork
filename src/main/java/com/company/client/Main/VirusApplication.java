@@ -4,9 +4,7 @@ import com.company.client.Client;
 import com.company.client.Models.Cell;
 import com.company.share.CellKind;
 import com.company.client.StartWindow.StartMenu;
-import com.company.share.PackageObj;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -14,12 +12,10 @@ import javafx.stage.Stage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class VirusApplication extends Application {
     @Override
-    public void start(Stage stage) throws IOException, ClassNotFoundException {
+    public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(VirusApplication.class.getResource("mainView.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Virus War");
@@ -119,7 +115,7 @@ public class VirusApplication extends Application {
         }
     }
 
-    public void addClickCount(int x, int y) throws IOException, ClassNotFoundException {
+    public void addClickCount(int x, int y) {
         mainController.getSkipMoveButton().setDisable(true);
         clickCount++;
         String logStr = Character.toString((char) ('a' + x)) + (10 - y);
@@ -136,6 +132,7 @@ public class VirusApplication extends Application {
                 if (moveStatus == CellKind.crossMark) moveStatus = CellKind.zeroMark;
                 else moveStatus = CellKind.crossMark;
                 if (Client.getInstance() != null && !Client.getInstance().closeFlag) mainController.getSkipMoveButton().setDisable(clientKind != moveStatus);
+                else mainController.getSkipMoveButton().setDisable(false);
                 mainController.switchPlayerMove();
 
 

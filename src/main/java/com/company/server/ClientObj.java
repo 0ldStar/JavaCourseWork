@@ -17,6 +17,5 @@ public class ClientObj {
     public String name;
     public PackageObj packageObj;
     public LinkedList<PackageObj> packageObjLinkedList;
-//    public boolean sendFlag = false;
     public boolean partnerReadyFlag = false;
 }

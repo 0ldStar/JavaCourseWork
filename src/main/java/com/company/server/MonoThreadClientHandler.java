@@ -70,7 +70,6 @@ public class MonoThreadClientHandler extends Thread {
                         break;
                     case "send move":
                         partnerObj.packageObjLinkedList.add((PackageObj) ois.readObject());
-//                        partnerObj.packageObj = (PackageObj) ois.readObject();
                         System.out.println("get move " + partnerObj.packageObjLinkedList.size());
                         break;
                     case "get partner":
@@ -89,7 +88,6 @@ public class MonoThreadClientHandler extends Thread {
                             Thread.sleep(100);
                         }
                         System.out.println("send move " + clientObj.packageObjLinkedList.size());
-//                        oos.writeObject(clientObj.packageObj);
                         oos.writeObject(clientObj.packageObjLinkedList.getFirst());
                         clientObj.packageObjLinkedList.remove(clientObj.packageObjLinkedList.getFirst());
                         oos.reset();
@@ -132,9 +130,7 @@ public class MonoThreadClientHandler extends Thread {
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (InterruptedException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }

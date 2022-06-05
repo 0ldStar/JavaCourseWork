@@ -2,7 +2,6 @@ package com.company.client.StartWindow;
 
 import java.io.IOException;
 import java.net.URL;
-import java.security.AllPermission;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -11,7 +10,6 @@ import java.util.regex.Pattern;
 
 import com.company.client.Client;
 import com.company.client.Main.VirusApplication;
-import com.company.share.CellKind;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -36,7 +34,7 @@ public class StartMenuController {
     private TextField loginTextField;
 
     @FXML
-    void exitMenuButtonClick(ActionEvent event) throws IOException {
+    void exitMenuButtonClick(ActionEvent event) {
         if (connectionFlag && !partnerFlag) {
             alert = new Alert(Alert.AlertType.CONFIRMATION, "Waiting the partner", ButtonType.YES);
             alert.showAndWait();
@@ -45,14 +43,12 @@ public class StartMenuController {
             startMenu.setDisable(true);
             StartMenu.getInstance().getStage().close();
             VirusApplication.getInstance().initFlag = true;
-//            if (Client.getInstance() != null && !Client.getInstance().closeFlag)
-//                VirusApplication.getInstance().update();
         }
     }
 
 
     @FXML
-    void getPropertiesButtonAction(ActionEvent event) throws IOException, ClassNotFoundException, InterruptedException {
+    void getPropertiesButtonAction(ActionEvent event) throws IOException, ClassNotFoundException {
         if (clientComboBox.getValue() == null) {
             alert = new Alert(Alert.AlertType.CONFIRMATION, "Choose the partner", ButtonType.YES);
             alert.showAndWait();
@@ -86,6 +82,7 @@ public class StartMenuController {
             }
             try {
                 Client client = new Client(loginTextField.getText(), host, port);
+                VirusApplication.getInstance().mainController.setClientName(loginTextField.getText());
                 client.start();
                 if (client.closeFlag) {
                     IPTextField.setText("localhost");
@@ -130,10 +127,6 @@ public class StartMenuController {
 
     @FXML
     void initialize() {
-//        propertiesPackage = new PropertiesPackage();
-        ArrayList<String> comboBoxTexts = new ArrayList<>();
-        for (int i = 10; i <= 100; i += 10)
-            comboBoxTexts.add(Integer.toString(i));
         startMenu.setContent(null);
         startMenu.setGraphic(null);
         IPTextField.setText("localhost");
