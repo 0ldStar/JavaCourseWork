@@ -7,8 +7,10 @@ import com.company.client.StartWindow.StartMenu;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ public class VirusApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(VirusApplication.class.getResource("mainView.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
+        stage.getIcons().add(new Image(new FileInputStream("src/image/Zerik.jpg")));
         stage.setTitle("Virus War");
         instance = this;
         mainController = fxmlLoader.getController();
