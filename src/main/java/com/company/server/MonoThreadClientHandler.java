@@ -5,6 +5,7 @@ import com.company.share.PackageObj;
 
 import java.io.*;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -34,7 +35,7 @@ public class MonoThreadClientHandler extends Thread {
 
             System.out.println("Connected " + clientName);
             label:
-            while (!clientDialog.isClosed() && !clientDialog.isOutputShutdown() && !clientDialog.isOutputShutdown()) {
+            while (!clientDialog.isClosed() && !clientDialog.isOutputShutdown() && !clientDialog.isInputShutdown()) {
                 System.out.println("Server reading from channel " + getId());
                 String entry = ois.readUTF();
                 System.out.println("READ from clientDialog message - " + entry);
@@ -68,26 +69,34 @@ public class MonoThreadClientHandler extends Thread {
                             clientObj.partnerReadyFlag = true;
                         }
                         break;
+                    case "get stats":
+                        int wonGame = MultiThreadServer.getWonCount(clientName);
+                        int totalGame = MultiThreadServer.getTotalCount(clientName);
+                        oos.writeUTF(Integer.toString(wonGame));
+                        oos.writeUTF(Integer.toString(totalGame));
+                        oos.reset();
+                        break;
                     case "send move":
-                        partnerObj.packageObjLinkedList.add((PackageObj) ois.readObject());
+                        PackageObj tmp = (PackageObj) ois.readObject();
+                        if (tmp.winFlag) {
+                            boolean isHeWon = tmp.winKind == clientObj.cellKind;
+                            MultiThreadServer.addDatabaseInfo(clientName, isHeWon);
+                        } else {
+                            partnerObj.packageObjLinkedList.add(tmp);
+                        }
                         System.out.println("get move " + partnerObj.packageObjLinkedList.size());
                         break;
                     case "get partner":
                         if (clientObj.partnerReadyFlag) {
-                            System.out.println("set partner " + clientObj.name + " ->" + partnerObj.name);
-                            if (clientObj.cellKind == CellKind.crossMark) System.out.println("crossMark");
-                            if (clientObj.cellKind == CellKind.zeroMark) System.out.println("zeroMark");
                             oos.writeObject(clientObj.cellKind);
                             oos.reset();
                             clientObj.partnerReadyFlag = false;
                         }
                         break;
                     case "get move":
-                        System.out.println("want to get move " + clientObj.packageObjLinkedList.size());
                         while (clientObj.packageObjLinkedList.size() == 0) {
                             Thread.sleep(100);
                         }
-                        System.out.println("send move " + clientObj.packageObjLinkedList.size());
                         oos.writeObject(clientObj.packageObjLinkedList.getFirst());
                         clientObj.packageObjLinkedList.remove(clientObj.packageObjLinkedList.getFirst());
                         oos.reset();
@@ -99,7 +108,6 @@ public class MonoThreadClientHandler extends Thread {
                     case "getClientList":
                         oos.writeUTF(Integer.toString(MultiThreadServer.clientCount - 1));
                         oos.reset();
-                        System.out.println("Send client list " + (MultiThreadServer.clientCount - 1));
                         synchronized (MultiThreadServer.clientVector) {
                             MultiThreadServer.clientVector.forEach(client -> {
                                 if (!Objects.equals(client.name, clientName) && client.clientStatus == ClientStatus.finding) {
@@ -130,7 +138,7 @@ public class MonoThreadClientHandler extends Thread {
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException | ClassNotFoundException e) {
+        } catch (InterruptedException | ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
     }

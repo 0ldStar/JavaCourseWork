@@ -28,12 +28,13 @@
          </image>
       </ImageView>
       <TextArea fx:id="logTextArea" editable="false" focusTraversable="false" layoutX="763.0" layoutY="38.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" />
-      <TextField fx:id="clickCountTextField" alignment="CENTER" editable="false" focusTraversable="false" layoutX="778.0" layoutY="281.0" />
-      <TextField fx:id="playerMoveTextField" alignment="CENTER" editable="false" focusTraversable="false" layoutX="778.0" layoutY="313.0" />
-      <Button fx:id="skipMoveButton" layoutX="820.0" layoutY="346.0" mnemonicParsing="false" onAction="#skipMoveButtonClick" text="Skip move" />
-      <Button fx:id="restartGameButton" layoutX="796.0" layoutY="594.0" mnemonicParsing="false" onAction="#restartGameButtonAction" prefHeight="24.0" prefWidth="137.0" text="Restart game" />
-      <TextArea fx:id="finishTextArea" editable="false" focusTraversable="false" layoutX="764.0" layoutY="383.0" prefHeight="200.0" prefWidth="200.0" />
+      <TextField fx:id="clickCountTextField" alignment="CENTER" editable="false" focusTraversable="false" layoutX="778.0" layoutY="305.0" />
+      <TextField fx:id="playerMoveTextField" alignment="CENTER" editable="false" focusTraversable="false" layoutX="778.0" layoutY="337.0" />
+      <Button fx:id="skipMoveButton" layoutX="820.0" layoutY="370.0" mnemonicParsing="false" onAction="#skipMoveButtonClick" text="Skip move" />
+      <Button fx:id="restartGameButton" layoutX="796.0" layoutY="618.0" mnemonicParsing="false" onAction="#restartGameButtonAction" prefHeight="24.0" prefWidth="137.0" text="Restart game" />
+      <TextArea fx:id="finishTextArea" editable="false" focusTraversable="false" layoutX="764.0" layoutY="407.0" prefHeight="200.0" prefWidth="200.0" />
       <TextField alignment="CENTER" editable="false" focusTraversable="false" layoutX="778.0" layoutY="14.0" text="Notation" />
       <TextField fx:id="clientNameField" alignment="CENTER" editable="false" focusTraversable="false" layoutX="778.0" layoutY="246.0" />
+      <TextField fx:id="statsField" alignment="CENTER" editable="false" focusTraversable="false" layoutX="778.0" layoutY="275.0" />
    </children>
 </AnchorPane>

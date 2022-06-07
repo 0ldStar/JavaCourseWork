@@ -55,6 +55,7 @@ public class StartMenuController {
         } else {
             Client.getInstance().chosePartner(clientComboBox.getValue());
             partnerFlag = Client.getInstance().getClientKind();
+            Client.getInstance().getStats();
         }
     }
 

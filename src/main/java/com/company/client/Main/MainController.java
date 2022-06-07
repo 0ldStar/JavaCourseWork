@@ -44,7 +44,8 @@ public class MainController {
     private TextArea finishTextArea;
     @FXML
     private TextField clientNameField;
-
+    @FXML
+    private TextField statsField;
     @FXML
     private TextArea logTextArea;
 
@@ -52,11 +53,16 @@ public class MainController {
     public void skipMoveButtonClick(ActionEvent event) throws IOException {
         VirusApplication.getInstance().skipMove();
         if (Client.getInstance() != null && !Client.getInstance().closeFlag)
-            Client.getInstance().sendMove(new PackageObj(0, 0, true));
+            Client.getInstance().sendMove(new PackageObj(0, 0, true, false, CellKind.cell));
     }
 
     @FXML
     void restartGameButtonAction(ActionEvent event) {
+        try {
+            Client.getInstance().quit();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         VirusApplication.getInstance().initGame();
     }
 
@@ -82,6 +88,10 @@ public class MainController {
         playerMoveTextField.setText(str);
     }
 
+    public void setStats(int wonGame, int totalGame) {
+        String str = "Total:%d  Won:%d".formatted(totalGame, wonGame);
+        statsField.setText(str);
+    }
 
     public void setClickCountTextField(String str) {
         clickCountTextField.setText("Click left: " + str);
@@ -93,16 +103,27 @@ public class MainController {
         restartGameButton.setVisible(true);
         String wonCellStr = null;
         CellKind wonCell = VirusApplication.getInstance().wonCell;
+        PackageObj tmp = null;
         switch (wonCell) {
             case crossMark -> {
+                tmp = new PackageObj(0, 0, false, true, CellKind.crossMark);
                 wonCellStr = "CrossMark won!";
                 finishTextArea.setStyle("-fx-text-fill: red ;");
             }
             case zeroMark -> {
+                tmp = new PackageObj(0, 0, false, true, CellKind.zeroMark);
                 wonCellStr = "ZeroMark won!";
                 finishTextArea.setStyle("-fx-text-fill: blue ;");
             }
-            case cell -> wonCellStr = "Draw!";
+            case cell -> {
+                tmp = new PackageObj(0, 0, false, true, CellKind.cell);
+                wonCellStr = "Draw!";
+            }
+        }
+        try {
+            Client.getInstance().sendMove(tmp);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         finishTextArea.setText(wonCellStr + "\nTotal click: " + VirusApplication.getInstance().getClickCountStr());
     }

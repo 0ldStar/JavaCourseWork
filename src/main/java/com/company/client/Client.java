@@ -50,7 +50,7 @@ public class Client extends Thread {
                 readyFlag = true;
                 update();
                 while (!socket.isClosed() && !closeFlag) {
-                    Thread.sleep(1000); //todo timerTask
+                    Thread.sleep(1000);
                 }
                 System.out.println("Client disconnected " + closeFlag);
                 ois.close();
@@ -62,6 +62,15 @@ public class Client extends Thread {
         closeFlag = true;
     }
 
+    public void getStats() throws IOException {
+        if (!closeFlag) {
+            oos.writeUTF("get stats");
+            oos.reset();
+            int wonGame = Integer.parseInt(ois.readUTF());
+            int totalGame = Integer.parseInt(ois.readUTF());
+            VirusApplication.getInstance().mainController.setStats(wonGame, totalGame);
+        }
+    }
 
     public boolean getClientKind() throws IOException, ClassNotFoundException {
         if (!closeFlag) {

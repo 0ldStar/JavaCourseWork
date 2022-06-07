@@ -2,7 +2,6 @@ package com.company.server;
 
 import com.company.share.CellKind;
 import com.company.share.PackageObj;
-
 import java.util.LinkedList;
 
 public class ClientObj {

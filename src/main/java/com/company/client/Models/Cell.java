@@ -64,7 +64,7 @@ public class Cell {
         if (validClick) {
             System.out.println("Clicked");
             if (Client.getInstance() != null && !Client.getInstance().closeFlag && VirusApplication.getInstance().moveStatus == VirusApplication.getInstance().clientKind)
-                Client.getInstance().sendMove(new PackageObj(_x, _y, false));
+                Client.getInstance().sendMove(new PackageObj(_x, _y, false, false, CellKind.cell));
             else System.out.println("Error");
             VirusApplication.getInstance().addClickCount(_x, _y);
         }
